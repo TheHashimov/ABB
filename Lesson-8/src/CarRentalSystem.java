@@ -17,7 +17,7 @@ public class CarRentalSystem {
 
     public void rentCar(Customer c, Car car, LocalDateTime customTime) {
         if (!availableCars.contains(car)) {
-            System.out.println("❌ Car is not available!");
+            System.out.println(" + Car is not available!");
             return;
         }
 
@@ -25,12 +25,12 @@ public class CarRentalSystem {
         rentalTimes.put(car, customTime);
         availableCars.remove(car);
 
-        System.out.println("✅ " + c.getName() + " rented " + car.getModel() + " at " + customTime);
+        System.out.println(" + " + c.getName() + " rented " + car.getModel() + " at " + customTime);
     }
 
     public void returnCar(Customer c, LocalDateTime returnTime) {
         if (!rentedCars.containsKey(c)) {
-            System.out.println("❌ This customer has no active rentals!");
+            System.out.println("x This customer has no active rentals!");
             return;
         }
 
@@ -42,7 +42,7 @@ public class CarRentalSystem {
         long hours = duration.toHours();
         long days = hours / 24;
 
-        System.out.println("\n✅ " + c.getName() + " returned " + car.getModel() +
+        System.out.println("\n + " + c.getName() + " returned " + car.getModel() +
                 " after " + days + " days (" + hours + " hours total)");
 
         availableCars.add(car);
@@ -51,7 +51,7 @@ public class CarRentalSystem {
     }
 
     public void printActiveRentals() {
-        System.out.println("\n📘 Active Rentals:");
+        System.out.println("\n Active Rentals:");
         for (Map.Entry<Customer, Car> entry : rentedCars.entrySet()) {
             Car car = entry.getValue();
             LocalDateTime time = rentalTimes.get(car);
@@ -61,14 +61,14 @@ public class CarRentalSystem {
     }
 
     public void printAvailableCars() {
-        System.out.println("\n🚘 Available Cars:");
+        System.out.println("\n Available Cars:");
         for (Car car : availableCars) {
             System.out.println(car);
         }
     }
 
     public void printRentalHistory() {
-        System.out.println("\n📜 Rental History:");
+        System.out.println("\n Rental History:");
         for (Map.Entry<Car, LocalDateTime> entry : history.entrySet()) {
             System.out.println(entry.getKey().getModel() +
                     " was last returned at " + entry.getValue());
