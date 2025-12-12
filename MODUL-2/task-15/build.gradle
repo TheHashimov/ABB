@@ -1,0 +1,98 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group = "org.abb_tech"
+version = "1.0.0"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('jakartaVersion', '6.1.0-M2')
+    set('jUnitVersion','5.10.2')
+}
+
+ext {
+    servletApiVersion = '4.0.1'
+
+}
+
+
+dependencies {
+        // JUnit & Mockito
+        testImplementation platform("org.junit:junit-bom:${jUnitVersion}")
+        testImplementation 'org.junit.jupiter:junit-jupiter'
+        testImplementation 'org.mockito:mockito-core:5.12.0'
+        testImplementation 'org.mockito:mockito-junit-jupiter:5.12.0'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+        // Servlet API
+        compileOnly "jakarta.servlet:jakarta.servlet-api:${jakartaVersion}"
+        testImplementation "jakarta.servlet:jakarta.servlet-api:${jakartaVersion}"
+
+    }
+
+
+test {
+    useJUnitPlatform()
+}
+
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'org.abb_tech.lesson2.Calculator'
+        )
+    }
+}
+
+
+tasks.named('war', War) {
+    archiveFileName.set("my-servlet-app.war")
+}
+
+
+
+tasks.register("firstTask"){
+    print("Hello Gradle Task")
+}
+
+//stop
+def stopTomcat = tasks.register('stopTomcat', Exec) {
+    workingDir tomcatHome
+    commandLine "${tomcatHome}/bin/shutdown.bat"
+    ignoreExitValue = true
+}
+//copy build war
+def copyWarToTomcat = tasks.register('copyWarToTomcat', Copy) {
+    dependsOn tasks.named('war')
+    from("$buildDir/libs")
+    include("my-servlet-app.war")
+    into("$tomcatHome/webapps")
+    mustRunAfter stopTomcat
+}
+// Start Tomcat
+def startTomcat = tasks.register('startTomcat', Exec) {
+    workingDir tomcatHome4  
+    commandLine "${tomcatHome}/bin/startup.bat"
+    mustRunAfter copyWarToTomcat
+}
+
+
+
+// Single command
+tasks.register('deployToTomcat') {
+    dependsOn stopTomcat, copyWarToTomcat, startTomcat
+    doLast {
+        println "Deployment to Tomcat completed successfully!"
+        }
+}
+
