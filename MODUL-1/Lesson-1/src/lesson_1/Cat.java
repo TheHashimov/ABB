@@ -5,7 +5,6 @@ import java.util.Scanner;
 public class Cat {
 
     public static void main(String[] args) {
-2
         Scanner Sc = new Scanner(System.in);
 
 ////       TASK-1
